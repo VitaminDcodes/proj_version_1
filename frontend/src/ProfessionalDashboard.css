@@ -1,0 +1,329 @@
+:root {
+  --bg-main: #020617;
+  --bg-panel: #0f172a;
+  --bg-overlay: rgba(15, 23, 42, 0.85);
+  --text-primary: #f8fafc;
+  --text-muted: #64748b;
+  --teal-accent: #2dd4bf;
+  --border-color: #1e293b;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
+
+.db {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* ─── TOP CONTROL BAR ──────────────────────────────────────────────────────── */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-panel);
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-color);
+  height: 65px;
+  box-sizing: border-box;
+}
+
+.topbar-left { display: flex; align-items: center; gap: 20px; }
+.logo { font-size: 14px; font-weight: 800; letter-spacing: 0.08em; }
+
+.conn-badge { 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  background: #1e293b; 
+  padding: 4px 12px; 
+  border-radius: 4px; 
+  font-size: 11px; 
+  font-weight: 600; 
+  color: #94a3b8; 
+}
+
+.live-dot { width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; box-shadow: 0 0 8px #22c55e; }
+.live-dot.offline { background-color: #ef4444; box-shadow: 0 0 8px #ef4444; }
+
+.topbar-actions { display: flex; gap: 10px; }
+
+.btn-rec {
+  font-size: 11px;
+  font-weight: bold;
+  border: 1px solid #dc2626;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #f8fafc;
+  background: #991b1b; 
+  transition: all 0.2s ease;
+}
+
+.btn-rec.recording {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border: 1px solid #ffffff;
+  box-shadow: 0 0 12px #dc2626;
+  animation: recPulse 1.5s infinite ease-in-out;
+}
+
+@keyframes recPulse {
+  0% { box-shadow: 0 0 4px #dc2626; }
+  50% { box-shadow: 0 0 15px #dc2626; }
+  100% { box-shadow: 0 0 4px #dc2626; }
+}
+
+.btn-exp {
+  font-size: 11px;
+  font-weight: bold;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+  background: #0ea5e9;
+  transition: all 0.2s ease;
+}
+
+.btn-exp:disabled {
+  background: #1e293b;
+  color: #475569;
+  cursor: not-allowed;
+  border: 1px solid #334155;
+}
+
+.top-stats { display: flex; gap: 24px; align-items: center; }
+.stat-item { display: flex; flex-direction: column; }
+.stat-label { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.stat-val { font-family: monospace; font-size: 14px; font-weight: 700; margin-top: 2px; }
+
+/* ─── PANEL WORKSPACE SPLITS ────────────────────────────────────────────────── */
+.panels { 
+  display: flex; 
+  flex: 1; 
+  width: 100%; 
+  height: calc(100% - 65px); 
+}
+
+/* 🚨 PERFECT 50/50 EQUAL SIZING FOR BOTH PANELS */
+.panel { display: flex; flex-direction: column; position: relative; height: 100%; }
+.panel-3d { flex: 1 !important; border-right: 1px solid var(--border-color); }
+.panel-map { flex: 1 !important; border-right: 1px solid var(--border-color); position: relative; min-width: 300px; }
+
+/* 🚨 FLOATING FIT BUTTONS */
+.fit-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 1000;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid var(--teal-accent);
+  color: var(--teal-accent);
+  padding: 6px 12px;
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  transition: all 0.2s ease;
+}
+.fit-btn:hover {
+  background: var(--teal-accent);
+  color: #020617;
+}
+
+.ph { 
+  background: #0b0f19; 
+  padding: 10px 16px; 
+  height: 40px; 
+  box-sizing: border-box; 
+  display: flex; 
+  align-items: center; 
+  border-bottom: 1px solid var(--border-color); 
+}
+.plabel { font-size: 11px; font-weight: 700; color: #94a3b8; letter-spacing: 0.05em; margin-left: 110px; /* Offset for fit button */ }
+
+.traj-panel { position: relative; flex: 1; width: 100%; height: calc(100% - 40px); overflow: hidden; }
+
+/* ─── 3D HUD OVERLAYS ──────────────────────────────────────────────────────── */
+.hud-tr { position: absolute; top: 15px; right: 15px; display: flex; flex-direction: column; gap: 8px; z-index: 10; pointer-events: none; }
+.hud-card { background: var(--bg-overlay); border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 14px; text-align: right; pointer-events: auto; min-width: 100px; }
+.hud-label { display: block; font-size: 9px; font-weight: 700; color: var(--text-muted); }
+.hud-val { font-family: monospace; font-size: 20px; font-weight: 800; }
+.hud-val.teal { color: var(--teal-accent); }
+
+/* ─── MAP RENDERING CANVAS ──────────────────────────────────────────────────── */
+.map-panel { width: 100%; height: 100%; position: relative; background: #020617; }
+
+.map-gcs-overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(9, 15, 30, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; pointer-events: none;
+}
+.gcs-warn-pulse {
+  color: #94a3b8; font-family: monospace; font-size: 11px; font-weight: 700;
+  border: 1px solid #334155; padding: 12px 24px; background: #0b0f19; border-radius: 4px;
+  letter-spacing: 0.05em; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  animation: overlayPulse 2s ease-in-out infinite;
+}
+
+@keyframes overlayPulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* ─── SIDEBAR ──────────────────────────────────────────────────────────────── */
+.sidebar {
+  width: 320px;
+  background-color: #0b1329;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-left: 1px solid var(--border-color);
+}
+
+.sb-tabs {
+  display: flex;
+  background-color: #070c1e;
+  border-bottom: 1px solid var(--border-color);
+  height: 40px;
+}
+
+.sb-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sb-tab.active {
+  color: var(--text-primary);
+  background-color: #0b1329;
+  border-bottom: 2px solid var(--teal-accent);
+}
+
+.sb-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sb-section {
+  background: #0f172a;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  padding: 14px;
+}
+
+.sb-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--teal-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 4px;
+}
+
+.sb-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+.sb-row:last-child { margin-bottom: 0; }
+
+.sb-key { color: var(--text-muted); font-weight: 500; }
+.sb-val { font-family: monospace; font-weight: 700; color: var(--text-primary); }
+.sb-val.teal { color: var(--teal-accent); }
+
+/* ─── 🚨 LEAFLET CUSTOM OVERRIDES FOR DATA VISIBILITY ──────────────────────────────────────────────── */
+.leaflet-popup-content-wrapper {
+  background: #0f172a !important;
+  border: 1px solid #1e293b;
+  border-radius: 4px !important;
+}
+.leaflet-popup-tip { background: #0f172a !important; }
+
+/* 🚨 SPECIFICALLY TARGETS THE HOVER POPUP TO ENSURE HIGH-CONTRAST READABILITY */
+.custom-dark-popup .leaflet-popup-content-wrapper {
+    background-color: rgba(15, 23, 42, 0.95) !important;
+    border: 1px solid #38bdf8 !important;
+    border-radius: 6px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.8) !important;
+}
+.custom-dark-popup .leaflet-popup-tip {
+    background: #38bdf8 !important; /* Force colored arrow tip */
+}
+.custom-dark-popup .leaflet-popup-content {
+    color: #f8fafc !important; /* Force white text default */
+    margin: 10px !important;
+}
+
+/* Thick High-Contrast Trajectory line shadow */
+.leaflet-polyline {
+    filter: drop-shadow(0px 0px 3px rgba(0,0,0,1));
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.rov-marker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent !important;
+    border: none !important;
+}
+
+/* 🚨 NEW: FLOATING RECENTER BUTTON (GOOGLE MAPS STYLE) */
+.recenter-btn {
+  position: absolute;
+  bottom: 30px;
+  right: 20px;
+  z-index: 1000;
+  background: #0f172a;
+  border: 2px solid #38bdf8;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+  color: #38bdf8;
+  transition: all 0.2s ease;
+}
+
+.recenter-btn:hover {
+  background: #38bdf8;
+  color: #0f172a;
+  transform: scale(1.05);
+}
